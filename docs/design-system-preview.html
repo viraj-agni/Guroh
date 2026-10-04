@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vidya — Design system preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root,
+    [data-theme="dark"] {
+      --bg: #050505;
+      --surface: #0f0f0f;
+      --surface-raised: #161616;
+      --border: #2a2418;
+      --text: #f5f0e8;
+      --text-muted: #9a9288;
+      --accent: #26c6b4;
+      --accent-hover: #4dd4c4;
+      --accent-pressed: #00897b;
+      --accent-warm: #ffb020;
+      --accent-warm-strong: #ff8c42;
+      --success: #5ad98f;
+      --warning: #f5c542;
+      --error: #e53935;
+      --info: #4fc3f7;
+      --gradient-warm: linear-gradient(180deg, #ffd54f 0%, #ff8c42 45%, #e64a19 100%);
+      --font-display: "Outfit", system-ui, sans-serif;
+      --font-body: "DM Sans", system-ui, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    [data-theme="light"] {
+      --bg: #faf7f2;
+      --surface: #f0ebe3;
+      --surface-raised: #ffffff;
+      --border: #d4cdc2;
+      --text: #1a1714;
+      --text-muted: #5c564d;
+      --accent: #00897b;
+      --accent-hover: #00695c;
+      --accent-pressed: #004d40;
+      --accent-warm: #c77d00;
+      --accent-warm-strong: #a35c00;
+      --success: #2e7d32;
+      --warning: #b45309;
+      --error: #c62828;
+      --info: #0277bd;
+      --gradient-warm: linear-gradient(180deg, #e8a317 0%, #d35400 45%, #9a3412 100%);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-optical-sizing: auto;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    header.top {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+      margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+    }
+    .brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.35rem;
+      letter-spacing: 0.02em;
+    }
+    .brand span { color: var(--accent); }
+    .theme-toggle {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .theme-toggle:hover { color: var(--accent-hover); border-color: var(--accent-hover); }
+    h1.hero {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      line-height: 1.15;
+      margin: 0 0 0.75rem;
+      max-width: 18ch;
+    }
+    .lede {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 52ch;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1rem;
+      color: var(--accent);
+    }
+    h3 { font-size: 0.9rem; font-weight: 600; margin: 1rem 0 0.5rem; color: var(--text-muted); }
+    .grid-2 { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .specimen-display { font-family: var(--font-display); font-size: 1.75rem; font-weight: 600; }
+    .specimen-body { font-family: var(--font-body); font-size: 0.95rem; margin-top: 0.5rem; color: var(--text-muted); }
+    .specimen-mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+      padding: 0.5rem 0.65rem;
+      background: var(--surface-raised);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .swatches { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+    .sw {
+      width: 4.5rem;
+      height: 4.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0.35rem;
+      font-size: 0.6rem;
+      font-family: var(--font-mono);
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.85);
+    }
+    .sw.muted-label { color: var(--text); text-shadow: none; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .btn {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .btn-primary { background: var(--accent-pressed); color: #f5f0e8; border-color: var(--accent); }
+    .btn-primary:hover { background: var(--accent); }
+    .btn-secondary { background: transparent; color: var(--accent); border-color: var(--accent); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border-color: var(--border); }
+    .alert { padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.85rem; margin-top: 0.5rem; border: 1px solid var(--border); }
+    .alert.ok { border-color: color-mix(in srgb, var(--success) 50%, var(--border)); color: var(--success); background: color-mix(in srgb, var(--success) 12%, var(--surface)); }
+    .alert.warn { border-color: color-mix(in srgb, var(--warning) 50%, var(--border)); color: var(--warning); }
+    .alert.err { border-color: color-mix(in srgb, var(--error) 50%, var(--border)); color: var(--error); }
+    .alert.info { border-color: color-mix(in srgb, var(--info) 50%, var(--border)); color: var(--info); }
+    .mock-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr 200px;
+      gap: 0;
+      min-height: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 0.75rem;
+    }
+    @media (max-width: 720px) { .mock-layout { grid-template-columns: 1fr; } }
+    .mock-rail, .mock-side {
+      background: var(--surface);
+      padding: 0.85rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      border-right: 1px solid var(--border);
+    }
+    .mock-side { border-right: none; border-left: 1px solid var(--border); }
+    .mock-main {
+      padding: 1rem;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .mock-canvas {
+      width: 100%;
+      max-width: 200px;
+      height: 120px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0.5rem;
+    }
+    .bar { height: 5px; border-radius: 4px; background: var(--border); margin-top: 0.5rem; overflow: hidden; }
+    .bar > div { height: 100%; width: 66%; background: var(--gradient-warm); }
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+    table.data th, table.data td { padding: 0.4rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+    table.data th { color: var(--text-muted); font-weight: 600; }
+    .form label { display: block; font-size: 0.78rem; color: var(--text-muted); margin-top: 0.65rem; }
+    .form input {
+      width: 100%;
+      max-width: 280px;
+      margin-top: 0.2rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface-raised);
+      color: var(--text);
+      font-family: var(--font-body);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">Project <span>Vidya</span></div>
+      <button type="button" class="theme-toggle" id="themeBtn" aria-pressed="false">Light mode</button>
+    </header>
+
+    <h1 class="hero">Mathematics you can feel, graded you can trust.</h1>
+    <p class="lede">
+      Preview of DESIGN.md tokens: dark laboratory, teal for action, warm arc for progress.
+      Toggle light to stress-test contrast (marketing draft, not final light product).
+    </p>
+
+    <h2>Typography</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Display / hero — Outfit</h3>
+        <div class="specimen-display">Anatomy of a Vector</div>
+        <p class="specimen-body">Body copy in DM Sans. Learners manipulate magnitude and direction while BKT updates in the background.</p>
+        <div class="specimen-mono">kc_vector_magnitude  P(L)=0.72  +0.04</div>
+      </div>
+      <div class="card">
+        <h3>UI labels &amp; buttons</h3>
+        <p class="specimen-body" style="color:var(--text);font-weight:600;">Continue · Check · Capstone</p>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary">Primary</button>
+          <button type="button" class="btn btn-secondary">Secondary</button>
+          <button type="button" class="btn btn-ghost">Ghost</button>
+        </div>
+      </div>
+    </div>
+
+    <h2>Color tokens</h2>
+    <div class="card">
+      <div class="swatches" aria-label="Palette swatches">
+        <div class="sw" style="background:#050505"><span class="muted-label">bg</span></div>
+        <div class="sw" style="background:#0f0f0f"><span class="muted-label">surface</span></div>
+        <div class="sw" style="background:#26c6b4;color:#000;text-shadow:none"><span>accent</span></div>
+        <div class="sw" style="background:#ffb020;color:#000;text-shadow:none"><span>warm</span></div>
+        <div class="sw" style="background:#5ad98f;color:#000;text-shadow:none"><span>ok</span></div>
+        <div class="sw" style="background:#e53935"><span>err</span></div>
+        <div class="sw" style="background:#f5c542;color:#000;text-shadow:none"><span>warn</span></div>
+      </div>
+      <div class="btn-row" style="margin-top:1rem;">
+        <div class="alert ok">Vector magnitude matches √(x²+y²). Nice.</div>
+      </div>
+      <div class="alert warn">Slip detected: recheck your intermediate step.</div>
+      <div class="alert err">Not quite. Remediation segment unlocked.</div>
+      <div class="alert info">Declarative + procedural evidence recorded.</div>
+    </div>
+
+    <h2>Module shell (demo-shaped)</h2>
+    <div class="card">
+      <div class="mock-layout">
+        <aside class="mock-rail">
+          <strong style="color:var(--accent);font-family:var(--font-display);font-size:0.85rem;">Mission</strong>
+          <p style="margin:0.5rem 0 0;line-height:1.35;">Build intuition for a 2D vector: components, magnitude, checks.</p>
+          <p style="margin:0.75rem 0 0;font-size:0.7rem;">Progress</p>
+          <div class="bar"><div></div></div>
+        </aside>
+        <main class="mock-main">
+          <div class="mock-canvas">R3F canvas placeholder<br /><span style="font-size:0.72rem;">Interactive grid in full app</span></div>
+        </main>
+        <aside class="mock-side">
+          <strong style="color:var(--accent-warm);font-size:0.75rem;">Cognitive focus</strong>
+          <p style="margin:0.35rem 0 0;">Procedural · conditional</p>
+        </aside>
+      </div>
+    </div>
+
+    <h2>Mastery rail (tabular data)</h2>
+    <div class="card">
+      <table class="data">
+        <thead><tr><th>kc_id</th><th>P(mastery)</th><th>Δ</th></tr></thead>
+        <tbody>
+          <tr><td>kc_isolate_variable</td><td>0.61</td><td style="color:var(--success);">+0.12</td></tr>
+          <tr><td>kc_vector_magnitude</td><td>0.58</td><td style="color:var(--success);">+0.08</td></tr>
+          <tr><td>kc_chain_rule</td><td>0.33</td><td style="color:var(--error);">−0.04</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Settings strip</h2>
+    <div class="card form">
+      <label>Display name <input type="text" value="Demo learner" /></label>
+      <label>Numeric tolerance <input type="text" value="1e-6" /></label>
+      <div class="btn-row" style="margin-top:1rem;">
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById("themeBtn");
+      function apply(t) {
+        root.setAttribute("data-theme", t);
+        btn.textContent = t === "dark" ? "Light mode" : "Dark mode";
+        btn.setAttribute("aria-pressed", t === "light" ? "true" : "false");
+      }
+      apply("dark");
+      btn.addEventListener("click", function () {
+        apply(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+      });
+    })();
+  </script>
+</body>
+</html>

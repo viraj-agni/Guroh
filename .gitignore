@@ -1,0 +1,33 @@
+# Node dependencies
+node_modules/
+.next/
+out/
+
+# Build outputs
+build/
+dist/
+.gradle/
+build/
+
+# Environment files & Secrets
+.env
+.env*.local
+*.pem
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python / Cache
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.sqlite3
+.vidya_demo.sqlite3
+
+# OS metadata
+.DS_Store
+Thumbs.db
