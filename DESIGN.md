@@ -6,20 +6,31 @@
 2. **Typography Architecture:**
    - **Brand, Display & Headings:** `Plus Jakarta Sans` (Weights: 500, 600, 700, 800) — Exact 1:1 corner radius match with Guroh Staircase G mark.
    - **Early Learner Body, Phonics & Reading:** `Lexend` (Weights: 400, 500, 600) — Scientifically optimized tracking for 5yo pre-readers.
-   - **Numeric Data & Code:** `IBM Plex Mono` / `JetBrains Mono` with `font-variant-numeric: tabular-nums`.
+   - **Numeric Data, Code & LaTeX:** `IBM Plex Mono` / `JetBrains Mono` with `font-variant-numeric: tabular-nums`.
 3. **Corner Radius Tokens:**
    - Cards & Containers: `rounded-2xl` (16px)
    - Buttons & Inputs: `rounded-xl` (12px)
    - Badges, Chips & Avatars: `rounded-full` (9999px)
-4. **Border Tokens:**
+4. **Border & Canvas Grid Tokens:**
    - Dark Mode: `1px` structural glass borders (`border-white/10` / `border-[#8D1516]/20`)
    - Light Mode: `1px` structural glass borders (`border-black/10` / `border-[#E6D8CC]`)
+   - Canvas Grids: Cartesian (32px), Isometric (40px), Polar (45° steps) with `#FFFFFF0A` stroke.
 5. **Iconography & Stroke Weights:**
    - Standard HUD & Secondary Chrome: Lucide React icons set to `strokeWidth={1.75}`.
    - Early Learner UI (Ages 5–8 / Horizon 1): Lucide React icons set to `strokeWidth={2.0}` or filled variants for instant visual recognition.
 6. **Touch Target Size Rule (Fitts's Law):**
    - Minimum Touch Target Height: `min-h-[48px]` for standard desktop controls, `min-h-[52px]` (or 56px) for Horizon 1 / early primary components (Ages 5–7) to satisfy Fitts's Law on touch/tablet devices.
-7. **Motion & Laboratory HUD:** Magic UI / Framer Motion for Stage 2/3 laboratory HUD glows, transition morphing, and interactive equation feedback.
+7. **Motion, Physics & Laboratory HUD:**
+   - Framer Motion Spring Presets: Magnetic `{ stiffness: 350, damping: 25, mass: 0.8 }`, Elastic `{ stiffness: 200, damping: 12 }`.
+   - Snap Threshold: `24px` in canvas space.
+8. **Interactive Math Variable Accent Tokens:**
+   - `var.alpha` (`#2A52BE` Oxford Sapphire)
+   - `var.beta` (`#D9A066` Academic Gold)
+   - `var.gamma` (`#2D6A4F` Sage Emerald)
+9. **3-Tier Idle Scaffolding System:**
+   - Tier 1 (8s Idle): Target pulse glow (`0 0 20px #D9A06680`).
+   - Tier 2 (15s Idle): Vector directional ghost path (`dash: 4 4`).
+   - Tier 3 (22s Idle): Focus overlay backplate (`#080203D9`) with audio prompt.
 
 ## Product Context
 
