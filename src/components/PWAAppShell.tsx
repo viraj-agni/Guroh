@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useOnlineStatus } from "@/lib/useOnlineStatus";
-import { WifiOff, Download, Sparkles, User, RefreshCw, CheckCircle2 } from "lucide-react";
+import { WifiOff, Download, Sparkles, User, RefreshCw, CheckCircle2, Laptop } from "lucide-react";
 import { getPendingSyncQueue, flushSyncQueueToServer } from "@/lib/indexedDB";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -28,6 +28,7 @@ export default function PWAAppShell({
   const [isInstalled, setIsInstalled] = useState<boolean>(false);
   const [pendingSyncCount, setPendingSyncCount] = useState<number>(0);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [syncStatusMsg, setSyncStatusMsg] = useState<string | null>(null);
 
   // Check pending sync items in IndexedDB
   const checkSyncQueue = async () => {
@@ -55,10 +56,29 @@ export default function PWAAppShell({
       setIsInstalled(true);
     }
 
+    // Listen for Service Worker broadcast messages
+    const handleServiceWorkerMessage = (event: MessageEvent) => {
+      if (event.data?.type === "SYNC_OFFLINE_PROGRESS_TRIGGERED") {
+        console.log("[PWAAppShell] Background sync trigger received from Service Worker");
+        setSyncStatusMsg("Background sync active...");
+        checkSyncQueue();
+        if (userEmail) {
+          handleManualSync();
+        }
+      }
+    };
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
+    }
+
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
+      }
     };
-  }, []);
+  }, [userEmail]);
 
   // Trigger manual sync when coming back online
   useEffect(() => {
@@ -80,9 +100,11 @@ export default function PWAAppShell({
   const handleManualSync = async () => {
     if (!userEmail) return;
     setIsSyncing(true);
+    setSyncStatusMsg("Flushing offline records...");
     await flushSyncQueueToServer(userEmail);
     await checkSyncQueue();
     setIsSyncing(false);
+    setSyncStatusMsg(null);
   };
 
   return (
@@ -91,11 +113,11 @@ export default function PWAAppShell({
       {!isOnline && (
         <div className="bg-[#B57C38] text-[#1E2225] px-4 py-2 flex items-center justify-between text-xs font-mono font-bold shadow-md z-50">
           <div className="flex items-center gap-2">
-            <WifiOff className="w-4 h-4 animate-pulse" />
+            <WifiOff className="w-4 h-4 animate-pulse shrink-0" />
             <span>Offline Mode Active — Progress is saved locally in IndexedDB and will sync automatically when connected.</span>
           </div>
           {pendingSyncCount > 0 && (
-            <span className="bg-[#1E2225] text-[#F9F1EC] px-2 py-0.5 rounded-full text-[10px]">
+            <span className="bg-[#1E2225] text-[#F9F1EC] px-2 py-0.5 rounded-full text-[10px] shrink-0">
               {pendingSyncCount} queued
             </span>
           )}
@@ -106,7 +128,7 @@ export default function PWAAppShell({
       {isOnline && pendingSyncCount > 0 && (
         <div className="bg-[#2D6A4F] text-[#F9F1EC] px-4 py-2 flex items-center justify-between text-xs font-mono font-semibold z-50">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 shrink-0" />
             <span>{pendingSyncCount} local lesson updates ready for atomic migration.</span>
           </div>
           <button
@@ -131,7 +153,7 @@ export default function PWAAppShell({
               className="w-[32px] h-[32px] md:w-[40px] md:h-[40px] object-contain"
             />
           </div>
-    <div>
+          <div>
             <h1 className="text-base font-display font-bold text-[#F2EFEB] tracking-wider leading-none">
               GUROH
             </h1>
@@ -146,7 +168,7 @@ export default function PWAAppShell({
           headerContent
         ) : (
           <div className="flex items-center gap-3">
-            {/* Install PWA Prompt Button */}
+            {/* Install PWA Prompt Header Trigger */}
             {deferredPrompt && !isInstalled && (
               <button
                 onClick={handleInstallClick}
@@ -185,19 +207,60 @@ export default function PWAAppShell({
         </div>
       </main>
 
-      {/* ZONE 3: Dark Slate Footer (#1E2225) */}
+      {/* ZONE 3: Dark Slate Footer / Utility (#1E2225) */}
       <footer className="bg-[#1E2225] border-t border-white/10 py-5 px-6 text-center text-xs font-mono text-[#D7D5DA] min-h-[52px]">
+        {/* Custom PWA Install Banner inside Zone 3 Footer */}
+        {deferredPrompt && !isInstalled && (
+          <div className="max-w-7xl mx-auto mb-5 bg-[#0F0505] border border-[#D9A066]/40 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl text-left">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#8D1516] flex items-center justify-center shrink-0 border border-white/10">
+                <Laptop className="w-5 h-5 text-[#D9A066]" />
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-[#F9F1EC] tracking-wide">
+                  Install Guroh Academy (PWA)
+                </h4>
+                <p className="text-xs text-[#D7D5DA]/80 font-sans mt-0.5">
+                  Run simulations offline with zero network latency, persistent local progress, and full desktop app capabilities.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleInstallClick}
+              className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-[#D9A066] hover:bg-[#B57C38] text-[#1E2225] font-bold text-xs font-mono rounded-xl transition-all shadow-md min-h-[48px] cursor-pointer"
+            >
+              <Download className="w-4 h-4" />
+              <span>Install Offline App</span>
+            </button>
+          </div>
+        )}
+
         {footerContent ? (
           footerContent
         ) : (
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-[#D7D5DA]/80">© 2026 Guroh Academy (Agni Labs). All Rights Reserved.</p>
-            <div className="flex items-center gap-4 text-[11px]">
+            <div className="flex flex-wrap items-center justify-center gap-4 text-[11px]">
               <span className="text-[#2D6A4F] flex items-center gap-1.5 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-[#2D6A4F] animate-pulse" />
                 IndexedDB Engine Active
               </span>
-              <span className="text-[#D7D5DA]/60">PWA Shell v1.0</span>
+              {isInstalled ? (
+                <span className="text-[#D9A066] flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  Installed Standalone
+                </span>
+              ) : deferredPrompt ? (
+                <button
+                  onClick={handleInstallClick}
+                  className="text-[#D9A066] hover:underline cursor-pointer flex items-center gap-1 font-semibold"
+                >
+                  <Download className="w-3 h-3" />
+                  Install App
+                </button>
+              ) : (
+                <span className="text-[#D7D5DA]/60">PWA Shell v2.0 (Offline Enabled)</span>
+              )}
             </div>
           </div>
         )}
