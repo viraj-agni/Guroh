@@ -1,0 +1,65 @@
+specification {
+  element actor {
+    style {
+      shape person
+    }
+  }
+  element container {
+    style {
+      shape rectangle
+    }
+  }
+  element component {
+    style {
+      shape component
+    }
+  }
+  element datastore {
+    style {
+      shape storage
+    }
+  }
+}
+
+model {
+  learner = actor 'Learner / Early Student' {
+    description '5yo+ early primary student or physical AI scholar interacting with tactile lesson sandboxes.'
+  }
+
+  gurohPwa = container 'Guroh PWA Application' {
+    description 'Next.js 16 + PWA App Shell architecture with offline guest state and atomic server sync.'
+
+    appShell = component '3-Zone App Shell' {
+      description 'Oxblood Header, Warm Ivory Canvas (#FDFBF7), Dark Slate Footer.'
+    }
+
+    swEngine = component 'Service Worker & Workbox' {
+      description 'Manages static asset caching, stale-while-revalidate strategy, and background sync.'
+    }
+
+    indexedDb = datastore 'Guest IndexedDB Store' {
+      description 'Zero-friction local progress store & pending sync queue.'
+    }
+
+    syncEngine = component 'Atomic Sync Migration Engine' {
+      description 'Flushes local guest records to PostgreSQL/Supabase upon sign-up.'
+    }
+  }
+
+  backendDb = datastore 'Supabase PostgreSQL DB' {
+    description 'Primary server-side data persistence for authenticated scholars.'
+  }
+
+  learner -> gurohPwa.appShell 'Interacts with tactile playgrounds'
+  gurohPwa.appShell -> gurohPwa.indexedDb 'Saves progress locally offline'
+  gurohPwa.swEngine -> gurohPwa.indexedDb 'Triggers background sync on reconnect'
+  gurohPwa.syncEngine -> gurohPwa.indexedDb 'Reads pending sync queue'
+  gurohPwa.syncEngine -> backendDb 'Flushes atomic updates upon sign-up'
+}
+
+views {
+  view index {
+    title 'Guroh PWA System Architecture'
+    include *
+  }
+}
