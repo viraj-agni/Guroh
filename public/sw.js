@@ -2,10 +2,9 @@ const CACHE_NAME = 'guroh-pwa-v1';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
-  '/guroh_icon_square.png',
   '/guroh_app_icon.png',
   '/guroh_logo_mark.svg',
-  '/favicon.ico'
+  '/favicon.svg'
 ];
 
 // Install Event - Pre-cache shell assets

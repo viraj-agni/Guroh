@@ -123,15 +123,15 @@ export default function PWAAppShell({
       {/* ZONE 1: Oxblood Header (3-Zone Spatial Layout) */}
       <header className="bg-[#8D1516] border-b border-white/10 px-4 md:px-6 py-3 flex items-center justify-between sticky top-0 z-40 min-h-[52px] shadow-lg">
         <div className="flex items-center gap-3">
-          {/* Logo Staircase Mark (Emblem 32x32 / 40x40 on #8D1516) */}
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-[#4A0B0C] border border-[#A37134]/30 p-1.5 flex items-center justify-center shadow-md">
+          {/* Logo Staircase Mark (Emblem exact 32px mobile / 40px desktop on #8D1516) */}
+          <div className="w-[32px] h-[32px] md:w-[40px] md:h-[40px] flex items-center justify-center shrink-0">
             <img
               src="/guroh_logo_mark.svg"
               alt="Guroh Mark"
-              className="w-full h-full object-contain filter drop-shadow"
+              className="w-[32px] h-[32px] md:w-[40px] md:h-[40px] object-contain"
             />
           </div>
-          <div>
+    <div>
             <h1 className="text-base font-display font-bold text-[#F2EFEB] tracking-wider leading-none">
               GUROH
             </h1>

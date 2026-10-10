@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Sparkles, Film, Home, CheckCircle, Sun, Moon } from "lucide-react";
 import { synth } from "@/components/AudioEngine";
+import { saveLessonProgress } from "@/lib/indexedDB";
 import ParallelTransversalsSandbox from "@/components/ParallelTransversalsSandbox";
 import TriangleSumSandbox from "@/components/TriangleSumSandbox";
 
@@ -38,6 +39,14 @@ export default function PlayPage({ params }: PlayPageProps) {
     synth.playSuccess();
     setCompleted(true);
     
+    // Save to IndexedDB guest offline store
+    saveLessonProgress({
+      nodeId: node_id,
+      stage: 3,
+      completed: true,
+      score: 100,
+    }).catch((err) => console.error("Failed to save progress to IndexedDB:", err));
+
     // Save local progress token to bypass authentication barriers
     localStorage.setItem(`vidya_progress_${node_id}`, "completed");
     
@@ -78,7 +87,7 @@ export default function PlayPage({ params }: PlayPageProps) {
   }
 
   return (
-    <div className={`flex flex-col min-h-screen bg-vidya-bg selection:bg-vidya-accent selection:text-vidya-void ${theme === "light" ? "light-theme text-vidya-text" : ""}`}>
+    <div className={`flex flex-col flex-1 w-full selection:bg-vidya-accent selection:text-vidya-void ${theme === "light" ? "light-theme text-vidya-text" : ""}`}>
       {/* Dynamic Header Navbar (Hidden in creatorMode) */}
       <AnimatePresence>
         {!creatorMode && (

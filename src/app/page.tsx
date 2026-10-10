@@ -104,7 +104,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`flex flex-col min-h-screen bg-vidya-bg selection:bg-vidya-accent selection:text-vidya-void ${theme === "light" ? "light-theme text-vidya-text" : ""}`}>
+    <div className={`flex flex-col flex-1 w-full selection:bg-vidya-accent selection:text-vidya-void ${theme === "light" ? "light-theme text-vidya-text" : ""}`}>
       {/* 1. Header Navigation Bar (Hidden in creatorMode) */}
       <AnimatePresence>
         {!creatorMode && (
