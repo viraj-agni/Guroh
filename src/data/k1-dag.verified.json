@@ -1,0 +1,237 @@
+{
+  "metadata": {
+    "kind": "lean_verified_subset",
+    "catalog_version": "1.0.0",
+    "manifest_catalog_version": "1.0.0"
+  },
+  "nodes": [
+    {
+      "id": "K.CC.1",
+      "domain": "K.CC",
+      "statement": "Count to 100 by ones and by tens.",
+      "title_one_line": "Count to 100 by ones and by tens.",
+      "description_paragraph": "Count to 100 by ones and by tens. This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative"
+      ],
+      "stage_hint": {
+        "shu": 1.0,
+        "ha": 0.0,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "K.CC.2",
+      "domain": "K.CC",
+      "statement": "Count forward beginning from a given number within the known sequence (instead of having to begin at 1).",
+      "title_one_line": "Count forward beginning from a given number within the known sequence (instead of having to begin at 1).",
+      "description_paragraph": "Count forward beginning from a given number within the known sequence (instead of having to begin at 1). This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative"
+      ],
+      "stage_hint": {
+        "shu": 1.0,
+        "ha": 0.0,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "K.CC.3",
+      "domain": "K.CC",
+      "statement": "Write numbers from 0 to 20. Represent a number of objects with a written numeral 0-20 (with 0 representing a count of no objects). Count to tell the number of objects.",
+      "title_one_line": "Write numbers from 0 to 20",
+      "description_paragraph": "Write numbers from 0 to 20. Represent a number of objects with a written numeral 0-20 (with 0 representing a count of no objects). Count to tell the number of objects. This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative",
+        "conceptual"
+      ],
+      "stage_hint": {
+        "shu": 1.0,
+        "ha": 0.0,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "K.CC.4a",
+      "domain": "K.CC",
+      "statement": "Understand the relationship between numbers and quantities; connect counting to cardinality. When counting objects, say the number names in the standard order, pairing each object with one and only one number name and each number name with one and only one object.",
+      "title_one_line": "Understand the relationship between numbers and quantities; connect counting to cardinality",
+      "description_paragraph": "Understand the relationship between numbers and quantities; connect counting to cardinality. When counting objects, say the number names in the standard order, pairing each object with one and only one number name and each number name with one and only one object. This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative",
+        "conceptual",
+        "conditional"
+      ],
+      "stage_hint": {
+        "shu": 0.67,
+        "ha": 0.33,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "K.CC.4b",
+      "domain": "K.CC",
+      "statement": "Understand that the last number name said tells the number of objects counted. The number of objects is the same regardless of their arrangement or the order in which they were counted.",
+      "title_one_line": "Understand that the last number name said tells the number of objects counted",
+      "description_paragraph": "Understand that the last number name said tells the number of objects counted. The number of objects is the same regardless of their arrangement or the order in which they were counted. This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative",
+        "conceptual",
+        "conditional"
+      ],
+      "stage_hint": {
+        "shu": 0.67,
+        "ha": 0.33,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "K.CC.4c",
+      "domain": "K.CC",
+      "statement": "Understand that each successive number name refers to a quantity that is one larger.",
+      "title_one_line": "Understand that each successive number name refers to a quantity that is one larger.",
+      "description_paragraph": "Understand that each successive number name refers to a quantity that is one larger. This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative",
+        "conceptual"
+      ],
+      "stage_hint": {
+        "shu": 1.0,
+        "ha": 0.0,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "K.CC.5",
+      "domain": "K.CC",
+      "statement": "Count to answer \"how many?\" questions about as many as 20 things arranged in a line, a rectangular array, or a circle, or as many as 10 things in a scattered configuration; given a number from 1-20, count out that many objects. Compare numbers.",
+      "title_one_line": "Count to answer \"how many?\" questions about as many as 20 things arranged in a line, a rectangular array, or a circle, or as many as 10 things in a scattered configuration; given a number from 1-20, c",
+      "description_paragraph": "Count to answer \"how many?\" questions about as many as 20 things arranged in a line, a rectangular array, or a circle, or as many as 10 things in a scattered configuration; given a number from 1-20, count out that many objects. Compare numbers. This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative"
+      ],
+      "stage_hint": {
+        "shu": 1.0,
+        "ha": 0.0,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "K.CC.6",
+      "domain": "K.CC",
+      "statement": "Identify whether the number of objects in one group is greater than, less than, or equal to the number of objects in another group, e.g., by using matching and counting strategies.",
+      "title_one_line": "Identify whether the number of objects in one group is greater than, less than, or equal to the number of objects in ano…",
+      "description_paragraph": "Identify whether the number of objects in one group is greater than, less than, or equal to the number of objects in another group, e.g., by using matching and counting strategies. This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative",
+        "conditional"
+      ],
+      "stage_hint": {
+        "shu": 0.5,
+        "ha": 0.5,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "K.CC.7",
+      "domain": "K.CC",
+      "statement": "Compare two numbers between 1 and 10 presented as written numerals.",
+      "title_one_line": "Compare two numbers between 1 and 10 presented as written numerals.",
+      "description_paragraph": "Compare two numbers between 1 and 10 presented as written numerals. This knowledge component is interpreted formally in the Lean curriculum layer (`DagProofs/DagProofs/Curriculum/`) as part of the verified dependency spine.",
+      "kc_types": [
+        "declarative",
+        "procedural"
+      ],
+      "stage_hint": {
+        "shu": 0.5,
+        "ha": 0.5,
+        "ri": 0.0
+      },
+      "color": "#5ad8a6",
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "edges": [
+    {
+      "from": "K.CC.1",
+      "to": "K.CC.2",
+      "kind": "verified_lean",
+      "lean_module": "DagProofs.Curriculum.KCC",
+      "theorem": "edge_K_CC_1_K_CC_2"
+    },
+    {
+      "from": "K.CC.2",
+      "to": "K.CC.3",
+      "kind": "verified_lean",
+      "lean_module": "DagProofs.Curriculum.KCC",
+      "theorem": "edge_K_CC_2_K_CC_3"
+    },
+    {
+      "from": "K.CC.3",
+      "to": "K.CC.4a",
+      "kind": "verified_lean",
+      "lean_module": "DagProofs.Curriculum.KCC",
+      "theorem": "edge_K_CC_3_K_CC_4a"
+    },
+    {
+      "from": "K.CC.4a",
+      "to": "K.CC.4b",
+      "kind": "verified_lean",
+      "lean_module": "DagProofs.Curriculum.KCC",
+      "theorem": "edge_K_CC_4a_K_CC_4b"
+    },
+    {
+      "from": "K.CC.4b",
+      "to": "K.CC.4c",
+      "kind": "verified_lean",
+      "lean_module": "DagProofs.Curriculum.KCC",
+      "theorem": "edge_K_CC_4b_K_CC_4c"
+    },
+    {
+      "from": "K.CC.4c",
+      "to": "K.CC.5",
+      "kind": "verified_lean",
+      "lean_module": "DagProofs.Curriculum.KCC",
+      "theorem": "edge_K_CC_4c_K_CC_5"
+    },
+    {
+      "from": "K.CC.5",
+      "to": "K.CC.6",
+      "kind": "verified_lean",
+      "lean_module": "DagProofs.Curriculum.KCC",
+      "theorem": "edge_K_CC_5_K_CC_6"
+    },
+    {
+      "from": "K.CC.6",
+      "to": "K.CC.7",
+      "kind": "verified_lean",
+      "lean_module": "DagProofs.Curriculum.KCC",
+      "theorem": "edge_K_CC_6_K_CC_7"
+    }
+  ]
+}

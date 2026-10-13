@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { synth } from "@/components/AudioEngine";
 import { getAllLessonProgress, LessonProgressRecord } from "@/lib/indexedDB";
-import k1DagData from "../../curriculum-graph/output/k1-dag.verified.json";
+import k1DagData from "@/data/k1-dag.verified.json";
 
 // Types matching verified Lean K-1 DAG schema
 export interface VerifiedDAGNode {

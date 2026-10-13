@@ -36,7 +36,7 @@ import {
   LessonProgressRecord,
   ClientCurriculumDAG
 } from "@/lib/indexedDB";
-import k1DagData from "../../curriculum-graph/output/k1-dag.verified.json";
+import k1DagData from "@/data/k1-dag.verified.json";
 
 interface ParentPortalProps {
   onBackToApp?: () => void;
