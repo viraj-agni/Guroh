@@ -8,6 +8,11 @@ import VectorSandbox from "@/components/VectorSandbox";
 import { useRouter } from "next/navigation";
 import ContentLibrary, { DAGNode } from "@/components/ContentLibrary";
 import AuthModal from "@/components/AuthModal";
+import GuestOnboardingFlow from "@/components/GuestOnboardingFlow";
+import CurriculumExplorer from "@/components/CurriculumExplorer";
+import ParentPortal from "@/components/ParentPortal";
+import DeferredConversionBanner from "@/components/DeferredConversionBanner";
+import { UserSession } from "@/lib/indexedDB";
 
 export default function Home() {
   const router = useRouter();
@@ -31,10 +36,12 @@ export default function Home() {
   });
   const [creatorMode, setCreatorMode] = useState<boolean>(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [activeTab, setActiveTab] = useState<"explorer" | "onboarding" | "sandbox" | "parent_portal">("explorer");
   
   // Auth gating state
   const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
   const [targetNodeName, setTargetNodeName] = useState<string>("");
+  const [authTriggerReason, setAuthTriggerReason] = useState<string | null>(null);
 
   // Keyboards listeners for Creator Mode (Ctrl + Shift + H)
   useEffect(() => {
@@ -80,6 +87,7 @@ export default function Home() {
 
     if (!isAuthenticated) {
       setTargetNodeName(node.label);
+      setAuthTriggerReason(`Unlock [${node.label}] & preserve all mastery metrics.`);
       setIsAuthOpen(true);
     } else {
       synth.playSuccess();
@@ -87,12 +95,20 @@ export default function Home() {
     }
   };
 
-  const handleAuthSuccess = (email: string) => {
+  const handleAuthSuccess = async (session: UserSession) => {
     setIsAuthenticated(true);
-    setUserEmail(email);
+    setUserEmail(session.email);
     localStorage.setItem("vidya_authenticated", "true");
-    localStorage.setItem("vidya_user_email", email);
+    localStorage.setItem("vidya_user_email", session.email);
     setIsAuthOpen(false);
+
+    // Flow 2: Trigger atomic migration of guest progress to the authenticated user
+    try {
+      const { flushSyncQueueToServer } = await import("@/lib/indexedDB");
+      await flushSyncQueueToServer(session.email);
+    } catch (err) {
+      console.warn("Deferred sync migration will complete in background:", err);
+    }
   };
 
   const handleSignOut = () => {
@@ -105,6 +121,16 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 w-full selection:bg-vidya-accent selection:text-vidya-void ${theme === "light" ? "light-theme text-vidya-text" : ""}`}>
+      {/* Deferred Conversion Banner across Header */}
+      {!creatorMode && (
+        <DeferredConversionBanner
+          onClaimProfile={() => {
+            setAuthTriggerReason("Your progress is stored on this device. Create an account to sync across devices & invite a guardian.");
+            setIsAuthOpen(true);
+          }}
+        />
+      )}
+
       {/* 1. Header Navigation Bar (Hidden in creatorMode) */}
       <AnimatePresence>
         {!creatorMode && (
@@ -189,39 +215,144 @@ export default function Home() {
 
       {/* 2. Main content container */}
       <main className="flex-1 flex flex-col">
-        {/* Hero Section: Vector Lab */}
-        <section className={`flex flex-col justify-center py-12 px-6 ${creatorMode ? "pt-2 pb-0 flex-1 justify-center bg-vidya-void" : "bg-gradient-to-b from-vidya-bg to-vidya-surface/40"}`}>
-          {/* Section Headings, hidden in creatorMode */}
-          {!creatorMode && (
-            <div className="text-center max-w-2xl mx-auto mb-10">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 border border-vidya-accent/20 bg-vidya-accent/5 text-vidya-accent text-[10px] font-mono rounded-full uppercase tracking-wider mb-4">
-                <Compass className="w-3.5 h-3.5" />
-                Active Module Playground
-              </div>
-              <h2 className="text-4xl font-display font-bold text-vidya-text tracking-tight sm:text-5xl">
-                Anatomy of a Vector
-              </h2>
-              <p className="mt-3 text-sm text-vidya-text-muted leading-relaxed">
-                Complete the three stages of physical visual mastery. Orient parameter ranges, compute algebraic orthogonality client-side, and launch gravitational vectors to destroy the target area!
-              </p>
+        {/* Mode Selector Pill (Roadmap vs Diagnostic vs Sandbox) */}
+        {!creatorMode && (
+          <div className="w-full flex justify-center pt-6 pb-2 px-6">
+            <div className="flex items-center gap-1 p-1 bg-vidya-surface border border-vidya-border rounded-xl flex-wrap justify-center">
+              <button
+                onClick={() => {
+                  synth.playClick();
+                  setActiveTab("explorer");
+                }}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[48px] ${
+                  activeTab === "explorer"
+                    ? "bg-guroh-primary text-guroh-ivory shadow-md"
+                    : "text-vidya-text-muted hover:text-vidya-text"
+                }`}
+              >
+                K-1 Spatial Roadmap
+              </button>
+              <button
+                onClick={() => {
+                  synth.playClick();
+                  setActiveTab("onboarding");
+                }}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[48px] ${
+                  activeTab === "onboarding"
+                    ? "bg-guroh-primary text-guroh-ivory shadow-md"
+                    : "text-vidya-text-muted hover:text-vidya-text"
+                }`}
+              >
+                Diagnostic Lab
+              </button>
+              <button
+                onClick={() => {
+                  synth.playClick();
+                  setActiveTab("sandbox");
+                }}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[48px] ${
+                  activeTab === "sandbox"
+                    ? "bg-guroh-primary text-guroh-ivory shadow-md"
+                    : "text-vidya-text-muted hover:text-vidya-text"
+                }`}
+              >
+                Vector Spire Sandbox
+              </button>
+              <button
+                onClick={() => {
+                  synth.playClick();
+                  setActiveTab("parent_portal");
+                }}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[48px] flex items-center gap-1.5 ${
+                  activeTab === "parent_portal"
+                    ? "bg-guroh-primary text-guroh-ivory shadow-md"
+                    : "text-vidya-text-muted hover:text-vidya-text"
+                }`}
+              >
+                <span>Parent Portal (P2)</span>
+              </button>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Playground Canvas wrapper */}
-          <VectorSandbox
-            onSequenceComplete={handleLandingComplete}
-            creatorMode={creatorMode}
-            theme={theme}
+        {/* Tab 1: K-1 Spatial Roadmap Explorer */}
+        {!creatorMode && activeTab === "explorer" ? (
+          <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+            <CurriculumExplorer
+              onOpenParentPortal={() => {
+                setActiveTab("parent_portal");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              onRequestAuth={(reason) => {
+                setAuthTriggerReason(reason || "Claim your verified diagnostic baseline and invite a guardian.");
+                setIsAuthOpen(true);
+              }}
+            />
+          </section>
+        ) : !creatorMode && activeTab === "onboarding" ? (
+          <GuestOnboardingFlow
+            onFlowCompleted={handleLandingComplete}
+            onExploreDashboard={() => {
+              setActiveTab("explorer");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            onOpenParentPortal={() => {
+              setActiveTab("parent_portal");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            onRequestAuth={(reason) => {
+              setAuthTriggerReason(reason || "Claim your verified diagnostic baseline and invite a guardian.");
+              setIsAuthOpen(true);
+            }}
           />
+        ) : !creatorMode && activeTab === "parent_portal" ? (
+          <section className="py-8 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+            <ParentPortal
+              onBackToApp={() => {
+                setActiveTab("explorer");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              onRequestAuth={(reason) => {
+                setAuthTriggerReason(reason || "Claim your verified diagnostic baseline and invite a guardian.");
+                setIsAuthOpen(true);
+              }}
+            />
+          </section>
+        ) : (
+          /* Tab 2: Vector Lab Sandbox */
+          <section className={`flex flex-col justify-center py-12 px-6 ${creatorMode ? "pt-2 pb-0 flex-1 justify-center bg-vidya-void" : "bg-gradient-to-b from-vidya-bg to-vidya-surface/40"}`}>
+            {/* Section Headings, hidden in creatorMode */}
+            {!creatorMode && (
+              <div className="text-center max-w-2xl mx-auto mb-10">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 border border-vidya-accent/20 bg-vidya-accent/5 text-vidya-accent text-[10px] font-mono rounded-full uppercase tracking-wider mb-4">
+                  <Compass className="w-3.5 h-3.5" />
+                  Active Module Playground
+                </div>
+                <h2 className="text-4xl font-display font-bold text-vidya-text tracking-tight sm:text-5xl">
+                  Anatomy of a Vector
+                </h2>
+                <p className="mt-3 text-sm text-vidya-text-muted leading-relaxed">
+                  Complete the three stages of physical visual mastery. Orient parameter ranges, compute algebraic orthogonality client-side, and launch gravitational vectors to destroy the target area!
+                </p>
+              </div>
+            )}
 
-          {/* Capture controls footer helper, visible ONLY in creatorMode */}
-          {creatorMode && (
-            <div className="w-full max-w-5xl mx-auto mt-4 px-6 flex items-center justify-between text-[11px] font-mono text-vidya-text-muted">
-              <span>Press <kbd className="bg-vidya-surface px-1.5 py-0.5 rounded border border-vidya-border text-vidya-accent-warm font-semibold">Ctrl + Shift + H</kbd> to exit presentation mode.</span>
-              <span className="text-vidya-accent font-semibold animate-pulse">Agni Labs Screen Capturer ready (1080p, 60fps)</span>
-            </div>
-          )}
-        </section>
+            {/* Playground Canvas wrapper */}
+            <VectorSandbox
+              onSequenceComplete={handleLandingComplete}
+              creatorMode={creatorMode}
+              theme={theme}
+            />
+
+            {/* Capture controls footer helper, visible ONLY in creatorMode */}
+            {creatorMode && (
+              <div className="w-full max-w-5xl mx-auto mt-4 px-6 flex items-center justify-between text-[11px] font-mono text-vidya-text-muted">
+                <span>Press <kbd className="bg-vidya-surface px-1.5 py-0.5 rounded border border-vidya-border text-vidya-accent-warm font-semibold">Ctrl + Shift + H</kbd> to exit presentation mode.</span>
+                <span className="text-vidya-accent font-semibold animate-pulse">Agni Labs Screen Capturer ready (1080p, 60fps)</span>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Separator / Progression Banner, hidden in creatorMode */}
         {!creatorMode && (
@@ -275,8 +406,9 @@ export default function Home() {
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
-        onSuccess={handleAuthSuccess}
+        onAuthSuccess={handleAuthSuccess}
         targetModuleName={targetNodeName}
+        triggerReason={authTriggerReason}
       />
     </div>
   );

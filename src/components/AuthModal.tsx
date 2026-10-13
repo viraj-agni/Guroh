@@ -22,7 +22,8 @@ import { UserSession } from "@/lib/indexedDB";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAuthSuccess: (session: UserSession) => Promise<{ syncedCount: number } | void> | void;
+  onAuthSuccess?: (session: UserSession) => Promise<{ syncedCount: number } | void> | void;
+  onSuccess?: (email: string) => void;
   targetModuleName?: string;
   triggerReason?: string | null;
 }
@@ -33,6 +34,7 @@ export default function AuthModal({
   isOpen,
   onClose,
   onAuthSuccess,
+  onSuccess,
   targetModuleName,
   triggerReason,
 }: AuthModalProps) {
@@ -65,7 +67,8 @@ export default function AuthModal({
         token: `magic_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
         createdAt: Date.now(),
       };
-      await onAuthSuccess(session);
+      if (onAuthSuccess) await onAuthSuccess(session);
+      if (onSuccess) onSuccess(session.email);
     }, 1000);
   };
 
@@ -94,7 +97,8 @@ export default function AuthModal({
         token: `jwt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
         createdAt: Date.now(),
       };
-      await onAuthSuccess(session);
+      if (onAuthSuccess) await onAuthSuccess(session);
+      if (onSuccess) onSuccess(session.email);
     }, 1000);
   };
 
@@ -116,7 +120,8 @@ export default function AuthModal({
         token: `g_oauth_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
         createdAt: Date.now(),
       };
-      await onAuthSuccess(session);
+      if (onAuthSuccess) await onAuthSuccess(session);
+      if (onSuccess) onSuccess(session.email);
     }, 1000);
   };
 

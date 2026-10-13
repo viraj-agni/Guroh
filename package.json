@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "repo-map": "python scripts/generate_repo_map.py"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -19,7 +20,7 @@
     "cn": "^0.4.0",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.17.0",
-    "next": "16.2.6",
+    "next": "^16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "shadcn": "^4.21.1",

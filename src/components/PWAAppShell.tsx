@@ -3,7 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useOnlineStatus } from "@/lib/useOnlineStatus";
 import { WifiOff, Download, Sparkles, User, RefreshCw, CheckCircle2, Laptop } from "lucide-react";
-import { getPendingSyncQueue, flushSyncQueueToServer } from "@/lib/indexedDB";
+import DeferredConversionBanner from "@/components/DeferredConversionBanner";
+import AuthModal from "@/components/AuthModal";
+import { getPendingSyncQueue, flushSyncQueueToServer, UserSession, getCachedCurriculumDAG, cacheCurriculumDAG, ClientCurriculumDAG } from "@/lib/indexedDB";
+import curriculumDagData from "@/data/curriculum_dag.json";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -29,6 +32,13 @@ export default function PWAAppShell({
   const [pendingSyncCount, setPendingSyncCount] = useState<number>(0);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [syncStatusMsg, setSyncStatusMsg] = useState<string | null>(null);
+  const [internalAuthOpen, setInternalAuthOpen] = useState<boolean>(false);
+  const [currentSessionUser, setCurrentSessionUser] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("vidya_user_email");
+    }
+    return null;
+  });
 
   // Check pending sync items in IndexedDB
   const checkSyncQueue = async () => {
@@ -42,6 +52,20 @@ export default function PWAAppShell({
 
   useEffect(() => {
     checkSyncQueue();
+
+    // Flow 3: Ensure master Curriculum DAG is cached in IndexedDB for offline capability
+    const primeOfflineCurriculumCache = async () => {
+      try {
+        const cached = await getCachedCurriculumDAG();
+        if (!cached || !cached.nodes || cached.nodes.length === 0) {
+          console.log("[PWAAppShell] Priming IndexedDB with Curriculum DAG ontology...");
+          await cacheCurriculumDAG(curriculumDagData as unknown as ClientCurriculumDAG);
+        }
+      } catch (e) {
+        console.warn("[PWAAppShell] Error priming curriculum DAG cache:", e);
+      }
+    };
+    primeOfflineCurriculumCache();
 
     // Listen for PWA Install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -101,7 +125,10 @@ export default function PWAAppShell({
     if (!userEmail) return;
     setIsSyncing(true);
     setSyncStatusMsg("Flushing offline records...");
-    await flushSyncQueueToServer(userEmail);
+    const result = await flushSyncQueueToServer(userEmail);
+    if (!result.success && result.error) {
+      console.warn("[PWAAppShell] Sync attempt deferred:", result.error);
+    }
     await checkSyncQueue();
     setIsSyncing(false);
     setSyncStatusMsg(null);
@@ -181,19 +208,26 @@ export default function PWAAppShell({
             )}
 
             {/* Account Status / Auth Action */}
-            {userEmail ? (
+            {userEmail || currentSessionUser ? (
               <div className="flex items-center gap-2 bg-[#4A2600]/80 border border-[#D9A066]/30 px-3 py-1.5 rounded-xl min-h-[48px]">
                 <User className="w-4 h-4 text-[#D9A066]" />
-                <span className="text-xs font-mono text-[#F9F1EC] font-semibold hidden md:inline">{userEmail}</span>
+                <span className="text-xs font-mono text-[#F9F1EC] font-semibold hidden md:inline">{userEmail || currentSessionUser}</span>
                 <CheckCircle2 className="w-3.5 h-3.5 text-[#2D6A4F]" />
               </div>
             ) : (
               <button
-                onClick={onOpenAuth}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-[#F9F1EC] px-3 py-2 rounded-xl text-xs font-mono transition-colors border border-white/20 min-h-[48px] cursor-pointer"
+                onClick={() => {
+                  if (onOpenAuth) onOpenAuth();
+                  else setInternalAuthOpen(true);
+                }}
+                className="flex items-center gap-2 bg-[#D9A066]/20 hover:bg-[#D9A066]/30 text-[#F9F1EC] px-3.5 py-2 rounded-xl text-xs font-mono transition-colors border border-[#D9A066]/40 min-h-[48px] cursor-pointer shadow-sm group"
+                title="Claim your profile to sync progress across devices"
               >
-                <User className="w-4 h-4 text-[#D9A066]" />
-                <span>Guest Scholar</span>
+                <User className="w-4 h-4 text-[#D9A066] group-hover:scale-110 transition-transform" />
+                <div className="flex flex-col text-left">
+                  <span className="font-bold text-[#F9F1EC] leading-tight">Claim Profile</span>
+                  <span className="text-[10px] text-[#D9A066] leading-tight">Guest Mode</span>
+                </div>
               </button>
             )}
           </div>
@@ -265,6 +299,22 @@ export default function PWAAppShell({
           </div>
         )}
       </footer>
+
+      {/* Internal Deferred Auth Modal when triggered via Shell header button */}
+      <AuthModal
+        isOpen={internalAuthOpen}
+        onClose={() => setInternalAuthOpen(false)}
+        onAuthSuccess={async (session: UserSession) => {
+          setCurrentSessionUser(session.email);
+          setInternalAuthOpen(false);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("vidya_authenticated", "true");
+            localStorage.setItem("vidya_user_email", session.email);
+          }
+          await flushSyncQueueToServer(session.email);
+        }}
+        triggerReason="Your progress is stored on this device. Create an account to sync across devices & invite a guardian."
+      />
     </div>
   );
 }
